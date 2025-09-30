@@ -23,12 +23,12 @@ const NewMarkdown = ({ content }) => {
     }
 
     return (
-        <ReactMarkdown
-            className='markdown-render'
-            rehypePlugins={[rehypeRaw]}
-            remarkPlugins={[remarkGfm]}
-            children={content}
-            components={{
+        <div className='markdown-render'>
+            <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm]}
+                children={content}
+                components={{
                 code({ node, inline, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
                     const code = String(children).replace(/\n$/, '');
@@ -73,6 +73,7 @@ const NewMarkdown = ({ content }) => {
                 },
             }}
         />
+        </div>
     );
 };
 
