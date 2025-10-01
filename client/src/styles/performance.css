@@ -1,0 +1,181 @@
+/* Performance-optimized CSS utilities */
+
+/* Critical CSS - Above the fold content */
+.critical-css {
+  /* This should contain only styles for above-the-fold content */
+  font-display: swap; /* Ensure text remains visible during font swaps */
+}
+
+/* Custom scrollbar for better performance */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+/* Optimized animations - Use transform and opacity for best performance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Animation classes with will-change for performance */
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.5s ease-out;
+  will-change: opacity, transform;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+  will-change: opacity;
+}
+
+/* Remove will-change after animation completes */
+.animate-fadeIn:after,
+.animate-slideIn:after {
+  will-change: auto;
+}
+
+/* GPU-accelerated shadows for better performance */
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.2));
+}
+
+.shadow-glow-lg {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.3));
+}
+
+/* Optimized gradients - Use conic-gradient for better performance where possible */
+.bg-gradient-optimized {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1) 0%, 
+    rgba(139, 92, 246, 0.1) 100%);
+}
+
+/* Performance hints for browsers */
+.performance-optimized {
+  /* Promote to GPU layer for better compositing */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  /* Optimize repaints */
+  will-change: transform;
+  
+  /* Better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+/* Container queries for better responsive design (when supported) */
+@container (min-width: 768px) {
+  .container-responsive {
+    /* Styles for larger containers */
+    padding: 2rem;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fadeIn,
+  .animate-slideIn,
+  .animate-float,
+  .animate-pulse-slow {
+    animation: none;
+  }
+  
+  .transition-all,
+  .transition-colors,
+  .transition-transform {
+    transition: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .text-gray-400 {
+    color: #000;
+  }
+  
+  .bg-dark-800 {
+    background-color: #fff;
+    border: 2px solid #000;
+  }
+}
+
+/* Print styles for better printing */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-optimize {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}
