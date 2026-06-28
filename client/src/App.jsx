@@ -9,9 +9,9 @@ const SharedChat = React.lazy(() => import('./components/SharedChat'))
 
 // Loading fallback component
 const LoadingFallback = React.memo(() => (
-  <div className="flex items-center justify-center h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
+  <div className="flex items-center justify-center h-screen bg-dark-900">
     <div className="flex flex-col items-center space-y-4">
-      <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       <p className="text-gray-400 text-sm">Loading...</p>
     </div>
   </div>
@@ -23,9 +23,8 @@ LoadingFallback.displayName = 'LoadingFallback'
 const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
   <div className={`
     fixed md:relative top-0 left-0 h-full 
-    w-80 xs:w-72 sm:w-80 md:w-1/6 lg:w-1/5 xl:w-1/6 2xl:w-1/6
-    bg-gradient-to-b from-dark-800/95 to-dark-900/95 backdrop-blur-md 
-    border-r border-dark-700/50 flex flex-col p-3 md:p-4 z-30
+    w-72 md:w-64 lg:w-72
+    bg-gradient-to-b from-dark-800/95 to-dark-900/95 backdrop-blur-xl border-r border-dark-700/50 flex flex-col p-4 z-30
     transform transition-transform duration-300 ease-out
     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
     ${sidebarOpen ? 'md:flex' : 'hidden md:flex'}
@@ -41,23 +40,35 @@ const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
       </svg>
     </button>
 
-    <div className="text-blue-300 mt-8 md:mt-0">
-      <h1 className="font-display font-bold text-lg md:text-xl mb-4 md:mb-6 animate-slideIn">Chat History</h1>
+    <div className="mt-8 md:mt-0">
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h1 className="font-semibold text-white text-lg">Chat History</h1>
+      </div>
     </div>
     
     <div className="flex-1 overflow-y-auto custom-scroll">
-      <div className="space-y-2 md:space-y-3">
+      <div className="space-y-2">
         {/* Placeholder for future chat history items */}
-        <div className="p-3 md:p-4 rounded-xl bg-dark-700/30 border border-dark-600/30 hover:bg-dark-600/40 transition-all duration-300 cursor-pointer animate-fadeIn opacity-50">
-          <div className="text-sm text-gray-300 font-medium">Previous chats will appear here</div>
-          <div className="text-xs text-gray-500 mt-1">Start a conversation to see history</div>
+        <div className="p-4 rounded-xl bg-dark-700/30 border border-dark-600/30 text-gray-400 text-sm hover:bg-dark-700/50 hover:border-dark-600/50 transition-all duration-300 cursor-pointer group">
+          <div className="flex items-center space-x-3">
+            <svg className="w-4 h-4 text-gray-500 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>No previous chats</span>
+          </div>
         </div>
       </div>
     </div>
     
-    <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border border-primary-500/20">
-      <div className="text-xs text-gray-400 text-center">
-        💡 Tip: Your conversations are saved locally
+    {/* Sidebar footer */}
+    <div className="mt-4 pt-4 border-t border-dark-700/50">
+      <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+        <p className="text-xs text-gray-400">Start a new conversation to see your chat history here.</p>
       </div>
     </div>
   </div>
@@ -67,7 +78,7 @@ Sidebar.displayName = 'Sidebar'
 
 // Memoized main content component
 const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
-  <div className='w-full flex h-dvh bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 overflow-hidden'>
+  <div className='w-full flex h-dvh bg-gradient-to-br from-dark-900 via-dark-900 to-dark-950 overflow-hidden'>
     {/* Mobile sidebar overlay */}
     {sidebarOpen && (
       <div 
@@ -89,11 +100,6 @@ const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
     
     {/* Main content */}
     <div className="flex-1 relative overflow-hidden min-w-0">
-      {/* Background gradient effects - responsive */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-900/5 via-transparent to-secondary-900/5 pointer-events-none"></div>
-      <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-primary-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-secondary-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none" style={{animationDelay: '1s'}}></div>
-      
       <Suspense fallback={<LoadingFallback />}>
         <ChatBox />
       </Suspense>
