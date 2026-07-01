@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { model } from "../gemini/gemini.config.js";
-const NewMarkdown = React.lazy(() => import("./NewMarkdown.jsx"));
-const ChatLoadingAnimation = React.lazy(() => import("./ChatLoadingAnimation.jsx"));
+import NewMarkdown from "./NewMarkdown.jsx";
+import ChatLoadingAnimation from "./ChatLoadingAnimation.jsx";
 
 // Memoized chat message component for better performance
 const ChatMessage = React.memo(({ chat, index }) => {
@@ -37,10 +37,8 @@ const ChatMessage = React.memo(({ chat, index }) => {
               {isUser ? "You" : "AI Assistant"}
             </div>
 						<div className="prose prose-slate max-w-none prose-sm">
-              <React.Suspense fallback={<div className="animate-pulse h-4 bg-gray-600 rounded"></div>}>
-                <NewMarkdown content={chat.parts[0].text} />
-              </React.Suspense>
-            </div>
+							<NewMarkdown content={chat.parts[0].text} />
+						</div>
           </div>
         </div>
       </div>
@@ -250,11 +248,7 @@ function ChatBox() {
 						geminiHistory.map((chat, index) => (
 							<ChatMessage key={`${chat.role}-${index}`} chat={chat} index={index} />
 						))}
-					{isLoading && (
-						<React.Suspense fallback={<div className="animate-pulse h-8 bg-gray-600 rounded"></div>}>
-							<ChatLoadingAnimation />
-						</React.Suspense>
-					)}
+					{isLoading && <ChatLoadingAnimation />}
 				</div>
 			</div>
 

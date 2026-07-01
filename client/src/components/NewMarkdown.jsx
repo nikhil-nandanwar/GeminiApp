@@ -1,15 +1,8 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-
-// Lazy load syntax highlighter for better performance
-const SyntaxHighlighter = React.lazy(() => 
-  import('react-syntax-highlighter').then(module => ({
-    default: module.Prism
-  }))
-);
 
 // Memoized copy button component
 const CopyButton = React.memo(({ code, copied, onCopy }) => (
@@ -32,22 +25,8 @@ CopyButton.propTypes = {
 };
 
 // Memoized code block component for better performance
-const CodeBlock = React.memo(({ language, code, ...props }) => {
+const CodeBlock = React.memo(({ code, ...props }) => {
   const [copied, setCopied] = useState(false);
-  const [style, setStyle] = useState(null);
-
-  // Load style asynchronously
-  useEffect(() => {
-    const loadStyle = async () => {
-      try {
-        const { oneDark } = await import('react-syntax-highlighter/dist/esm/styles/prism');
-        setStyle(oneDark);
-      } catch (error) {
-        console.warn('Failed to load syntax highlighter style:', error);
-      }
-    };
-    loadStyle();
-  }, []);
 
   const handleCopy = useCallback(async (codeText) => {
     try {
@@ -74,49 +53,23 @@ const CodeBlock = React.memo(({ language, code, ...props }) => {
     }
   }, []);
 
-  const customStyle = useMemo(() => ({
-    margin: 0,
-    padding: '1rem',
-    paddingTop: '2rem',
-    border: '1px solid #e2e8f0',
-    borderRadius: '1rem',
-    background: '#f8fafc',
-    fontSize: '0.875rem',
-    lineHeight: '1.4'
-  }), []);
-
-  const shouldShowLineNumbers = useMemo(() => {
-    return code.split('\n').length > 10;
-  }, [code]);
-
   return (
     <div className="relative mb-6 rounded-2xl overflow-hidden bg-slate-50 shadow-[0_14px_30px_rgba(15,23,42,0.05)] border border-slate-200">
       <CopyButton code={code} copied={copied} onCopy={handleCopy} />
-      <React.Suspense fallback={
-        <div className="p-4 bg-slate-100 text-slate-600 font-mono text-sm whitespace-pre-wrap">
+      <pre
+        className="m-0 overflow-x-auto p-4 pt-10 bg-slate-50 text-slate-700 text-sm leading-relaxed"
+        {...props}
+      >
+        <code className="font-mono whitespace-pre-wrap break-words">
           {code}
-        </div>
-      }>
-        <SyntaxHighlighter
-          style={style || {}}
-          language={language || 'text'}
-          PreTag="div"
-          customStyle={customStyle}
-          showLineNumbers={shouldShowLineNumbers}
-          wrapLines={true}
-          wrapLongLines={true}
-          {...props}
-        >
-          {code}
-        </SyntaxHighlighter>
-      </React.Suspense>
+        </code>
+      </pre>
     </div>
   );
 });
 
 CodeBlock.displayName = 'CodeBlock';
 CodeBlock.propTypes = {
-  language: PropTypes.string,
   code: PropTypes.string.isRequired
 };
 
@@ -124,17 +77,10 @@ const NewMarkdown = ({ content }) => {
   // Memoized markdown components
   const components = useMemo(() => ({
     code({ inline, className, children, ...props }) {
-      const match = /language-(\w+)/.exec(className || '');
       const code = String(children).replace(/\n$/, '');
-      const language = match ? match[1] : null;
 
-      return !inline && language ? (
-        <CodeBlock 
-          language={language} 
-          code={code} 
-          className={className} 
-          {...props} 
-        />
+      return !inline ? (
+        <CodeBlock code={code} className={className} {...props} />
       ) : (
         <code 
           className={`${className} px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-700 font-mono text-sm border border-orange-100`} 

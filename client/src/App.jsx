@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo, Suspense } from 'react'
+import React, { useEffect, useState, useCallback, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import './App.css'
 
-// Lazy load components for better performance
-const Navbar = React.lazy(() => import('./components/Navbar'))
-const ChatBox = React.lazy(() => import('./components/ChatBox'))
+import Navbar from './components/Navbar'
+import ChatBox from './components/ChatBox'
 const SharedChat = React.lazy(() => import('./components/SharedChat'))
 
 // Loading fallback component
@@ -139,35 +138,26 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Memoized routes configuration
-  const routes = useMemo(() => [
-    {
-      path: "/",
-      element: (
-        <>
-          <Suspense fallback={<LoadingFallback />}>
-            <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          </Suspense>
-          <MainContent sidebarOpen={sidebarOpen} onSidebarClose={handleSidebarClose} />
-        </>
-      )
-    },
-    {
-      path: "/:id",
-      element: (
-        <Suspense fallback={<LoadingFallback />}>
-          <SharedChat />
-        </Suspense>
-      )
-    }
-  ], [sidebarOpen, handleSidebarClose]);
-
   return (
     <Router>
       <Routes>
-        {routes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
+        <Route
+          path="/"
+          element={(
+            <>
+              <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <MainContent sidebarOpen={sidebarOpen} onSidebarClose={handleSidebarClose} />
+            </>
+          )}
+        />
+        <Route
+          path="/:id"
+          element={(
+            <Suspense fallback={<LoadingFallback />}>
+              <SharedChat />
+            </Suspense>
+          )}
+        />
       </Routes>
     </Router>
   )
