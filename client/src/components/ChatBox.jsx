@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import PropTypes from "prop-types";
 import { model } from "../gemini/gemini.config.js";
 const NewMarkdown = React.lazy(() => import("./NewMarkdown.jsx"));
 const ChatLoadingAnimation = React.lazy(() => import("./ChatLoadingAnimation.jsx"));
@@ -30,7 +31,7 @@ const ChatMessage = React.memo(({ chat, index }) => {
           <div className={`flex-1 min-w-0 p-4 rounded-2xl ${
             isUser
 							? "bg-gradient-to-br from-orange-500 to-amber-400 text-white shadow-[0_14px_30px_rgba(249,115,22,0.18)]"
-							: "bg-white text-slate-700 border border-slate-200 shadow-[0_14px_30px_rgba(15,23,42,0.05)] backdrop-blur-sm"
+							: "bg-[#f8f4ee] text-slate-700 border border-amber-100 shadow-[0_14px_30px_rgba(120,113,108,0.1)] backdrop-blur-sm"
           }`}>
 						<div className={`text-xs mb-2 font-medium opacity-70 ${isUser ? "text-sky-50" : "text-slate-400"}`}>
               {isUser ? "You" : "AI Assistant"}
@@ -48,6 +49,17 @@ const ChatMessage = React.memo(({ chat, index }) => {
 });
 
 ChatMessage.displayName = 'ChatMessage';
+ChatMessage.propTypes = {
+	chat: PropTypes.shape({
+		role: PropTypes.string.isRequired,
+		parts: PropTypes.arrayOf(
+			PropTypes.shape({
+				text: PropTypes.string.isRequired
+			})
+		).isRequired
+	}).isRequired,
+	index: PropTypes.number.isRequired
+};
 
 // Memoized welcome screen component
 const WelcomeScreen = React.memo(() => (
@@ -88,7 +100,7 @@ const WelcomeScreen = React.memo(() => (
           </svg>
         )}
       ].map((item, index) => (
-				<div key={index} className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-200 hover:bg-sky-50 hover:shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-all duration-300 cursor-pointer group">
+				<div key={index} className="p-4 rounded-2xl bg-[#f8f4ee] border border-amber-100 hover:border-orange-200 hover:bg-orange-50/70 hover:shadow-[0_10px_30px_rgba(120,113,108,0.08)] transition-all duration-300 cursor-pointer group">
           <div className="flex items-center space-x-3">
 						<div className="text-orange-500 group-hover:scale-110 transition-transform">{item.icon}</div>
 						<span className="text-slate-600 text-sm font-medium">{item.text}</span>
@@ -199,13 +211,6 @@ function ChatBox() {
 		}
 	}, [prompt, geminiHistory, saveToLocalStorage]);
 
-	// Memoized clear chat function
-	const clearChat = useCallback(() => {
-		setGeminiHistory([]);
-		setPrevChat(false);
-		localStorage.removeItem("GeminiHistory");
-	}, []);
-
 	// Memoized key check function
 	const check = useCallback((e) => {
 		if ((e.code === "Enter" || e.code === "NumpadEnter") && !e.shiftKey) {
@@ -254,7 +259,7 @@ function ChatBox() {
 			</div>
 
 			{/* Input area */}
-			<div className="w-full bg-white/90 backdrop-blur-xl border-t border-slate-200 p-4 shadow-[0_-12px_40px_rgba(15,23,42,0.05)]">
+			<div className="w-full bg-[#f8f4ee]/95 backdrop-blur-xl border-t border-amber-100 p-4 shadow-[0_-12px_40px_rgba(120,113,108,0.1)]">
 				<form
 					onKeyDown={check}
 					onSubmit={handleFormSubmit}
@@ -266,7 +271,7 @@ function ChatBox() {
 								placeholder="Write a message. Shift+Enter adds a new line."
 								onChange={handleInputChange}
 								value={prompt}
-								className="w-full rounded-[1.25rem] p-4 pr-14 bg-slate-50 text-slate-900 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-orange-200 border border-slate-200 text-sm shadow-sm transition-all duration-300"
+								className="w-full rounded-[1.25rem] p-4 pr-14 bg-[#f3ede4] text-slate-900 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-orange-200 border border-amber-100 text-sm shadow-sm transition-all duration-300"
 								rows="1"
 								style={{ 
 									minHeight: "52px", 

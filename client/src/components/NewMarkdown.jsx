@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
@@ -24,9 +25,14 @@ const CopyButton = React.memo(({ code, copied, onCopy }) => (
 ));
 
 CopyButton.displayName = 'CopyButton';
+CopyButton.propTypes = {
+  code: PropTypes.string.isRequired,
+  copied: PropTypes.bool.isRequired,
+  onCopy: PropTypes.func.isRequired
+};
 
 // Memoized code block component for better performance
-const CodeBlock = React.memo(({ language, code, className, ...props }) => {
+const CodeBlock = React.memo(({ language, code, ...props }) => {
   const [copied, setCopied] = useState(false);
   const [style, setStyle] = useState(null);
 
@@ -61,7 +67,7 @@ const CodeBlock = React.memo(({ language, code, className, ...props }) => {
         document.execCommand('copy');
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-      } catch (fallbackError) {
+      } catch {
         alert('Failed to copy code. Please copy manually.');
       }
       document.body.removeChild(textArea);
@@ -109,11 +115,15 @@ const CodeBlock = React.memo(({ language, code, className, ...props }) => {
 });
 
 CodeBlock.displayName = 'CodeBlock';
+CodeBlock.propTypes = {
+  language: PropTypes.string,
+  code: PropTypes.string.isRequired
+};
 
 const NewMarkdown = ({ content }) => {
   // Memoized markdown components
   const components = useMemo(() => ({
-    code({ node, inline, className, children, ...props }) {
+    code({ inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || '');
       const code = String(children).replace(/\n$/, '');
       const language = match ? match[1] : null;
@@ -234,3 +244,7 @@ const NewMarkdown = ({ content }) => {
 };
 
 export default React.memo(NewMarkdown);
+
+NewMarkdown.propTypes = {
+  content: PropTypes.string
+};

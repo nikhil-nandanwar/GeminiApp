@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import './App.css'
 
 // Lazy load components for better performance
@@ -9,8 +10,8 @@ const SharedChat = React.lazy(() => import('./components/SharedChat'))
 
 // Loading fallback component
 const LoadingFallback = React.memo(() => (
-  <div className="flex items-center justify-center h-screen bg-[radial-gradient(circle_at_top,rgba(251,146,60,0.16),transparent_42%),linear-gradient(180deg,#ffffff_0%,#f5f5f5_100%)] text-slate-700">
-    <div className="flex flex-col items-center gap-4 rounded-3xl border border-slate-200 bg-white/90 px-8 py-7 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+  <div className="flex items-center justify-center h-screen bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_42%),linear-gradient(180deg,#f8f4ee_0%,#ece7df_100%)] text-slate-700">
+    <div className="flex flex-col items-center gap-4 rounded-3xl border border-amber-100 bg-[#f8f4ee]/95 px-8 py-7 shadow-[0_20px_60px_rgba(120,113,108,0.12)] backdrop-blur-xl">
       <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500"></div>
       <p className="text-sm font-medium tracking-wide">Loading conversation</p>
     </div>
@@ -24,7 +25,7 @@ const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
   <div className={`
     fixed md:relative top-0 left-0 h-full 
     w-72 md:w-64 lg:w-72
-    bg-white/90 backdrop-blur-xl border-r border-slate-200/80 shadow-[0_20px_60px_rgba(15,23,42,0.08)] flex flex-col p-4 z-30
+    bg-[#f8f4ee]/95 backdrop-blur-xl border-r border-amber-100 shadow-[0_20px_60px_rgba(120,113,108,0.12)] flex flex-col p-4 z-30
     transform transition-transform duration-300 ease-out
     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
     ${sidebarOpen ? 'md:flex' : 'hidden md:flex'}
@@ -54,7 +55,7 @@ const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
     <div className="flex-1 overflow-y-auto custom-scroll">
       <div className="space-y-2">
         {/* Placeholder for future chat history items */}
-        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-500 text-sm hover:bg-orange-50 hover:border-orange-200 transition-all duration-300 cursor-pointer group">
+        <div className="p-4 rounded-2xl bg-[#f3ede4] border border-amber-100 text-slate-500 text-sm hover:bg-orange-50 hover:border-orange-200 transition-all duration-300 cursor-pointer group">
           <div className="flex items-center space-x-3">
             <svg className="w-4 h-4 text-slate-400 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -67,7 +68,7 @@ const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
     
     {/* Sidebar footer */}
     <div className="mt-4 pt-4 border-t border-slate-200/80">
-      <div className="p-3 rounded-2xl bg-orange-50 border border-orange-100">
+      <div className="p-3 rounded-2xl bg-orange-50/80 border border-orange-200/70">
         <p className="text-xs text-slate-500">Start a new conversation to see your chat history here.</p>
       </div>
     </div>
@@ -75,10 +76,14 @@ const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
 ))
 
 Sidebar.displayName = 'Sidebar'
+Sidebar.propTypes = {
+  sidebarOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired
+}
 
 // Memoized main content component
 const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
-  <div className='w-full flex h-dvh bg-[radial-gradient(circle_at_top_left,rgba(251,146,60,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.7),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f5f5f5_100%)] overflow-hidden'>
+  <div className='w-full flex h-dvh bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.2),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(248,244,238,0.85),transparent_28%),linear-gradient(180deg,#f8f4ee_0%,#ece7df_100%)] overflow-hidden'>
     {/* Mobile sidebar overlay */}
     {sidebarOpen && (
       <div 
@@ -108,6 +113,10 @@ const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
 ))
 
 MainContent.displayName = 'MainContent'
+MainContent.propTypes = {
+  sidebarOpen: PropTypes.bool.isRequired,
+  onSidebarClose: PropTypes.func.isRequired
+}
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -115,11 +124,6 @@ function App() {
   // Memoized sidebar close handler
   const handleSidebarClose = useCallback(() => {
     setSidebarOpen(false);
-  }, []);
-
-  // Memoized sidebar toggle handler
-  const handleSidebarToggle = useCallback(() => {
-    setSidebarOpen(prev => !prev);
   }, []);
 
   // Close sidebar when clicking outside or on mobile

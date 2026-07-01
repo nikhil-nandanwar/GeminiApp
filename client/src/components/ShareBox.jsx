@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
+import PropTypes from "prop-types";
 import axios from 'axios';
 
 export default function ShareBox({ shareLink }) {
@@ -26,7 +27,7 @@ export default function ShareBox({ shareLink }) {
                 setSharableLink(`${window.location.origin}/${response.data.data.id}`);
             }
 
-        } catch (error) {
+        } catch {
             // console.log("ERROR at ShareBox.jsx : ", error);
         } finally {
             setLoading(false);
@@ -35,7 +36,7 @@ export default function ShareBox({ shareLink }) {
 
     return (
         <div className="z-30 fixed inset-0 flex items-center justify-center bg-slate-900/20 backdrop-blur-sm p-4 animate-fadeIn">
-            <div className="bg-white/96 backdrop-blur-xl rounded-[1.5rem] border border-slate-200 p-6 w-full max-w-md shadow-[0_24px_80px_rgba(15,23,42,0.12)] animate-scaleIn">
+            <div className="bg-[#f8f4ee]/95 backdrop-blur-xl rounded-[1.5rem] border border-amber-100 p-6 w-full max-w-md shadow-[0_24px_80px_rgba(120,113,108,0.16)] animate-scaleIn">
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center shadow-sm shadow-orange-200/80">
@@ -66,7 +67,7 @@ export default function ShareBox({ shareLink }) {
                         <input
                             type="text"
                             value={sharableLink}
-                            className="w-full bg-slate-50 text-slate-900 p-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-200 text-sm backdrop-blur-sm transition-all duration-300"
+                            className="w-full bg-[#f3ede4] text-slate-900 p-4 rounded-2xl border border-amber-100 focus:outline-none focus:ring-2 focus:ring-orange-200 text-sm backdrop-blur-sm transition-all duration-300"
                             placeholder="Your shareable link will appear here..."
                             readOnly={true}
                             ref={passwordRef}
@@ -137,3 +138,7 @@ export default function ShareBox({ shareLink }) {
         </div>
     );
 }
+
+ShareBox.propTypes = {
+    shareLink: PropTypes.func.isRequired
+};

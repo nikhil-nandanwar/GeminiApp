@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ChatBox from './ChatBox';
 
 export default function SharedChat() {
     const { id } = useParams();
-    const [chat, setChat] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -16,7 +14,6 @@ export default function SharedChat() {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/${id}`);
                 const chatData = JSON.parse(response.data.chat.chat);
                 // console.log('Fetched chat data:', chatData); // Debug log
-                setChat(chatData);
                 window.localStorage.setItem("GeminiHistory", JSON.stringify(chatData));
                 setLoading(false);
                 navigate('/');

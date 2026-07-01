@@ -73,9 +73,9 @@
 
 body {
   background:
-    radial-gradient(circle at top left, rgba(251, 146, 60, 0.18), transparent 36%),
-    radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.08), transparent 32%),
-    linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent 36%),
+    radial-gradient(circle at bottom right, rgba(120, 113, 108, 0.1), transparent 32%),
+    linear-gradient(180deg, #f8f4ee 0%, #ece7df 100%);
 }
 
 ::-webkit-scrollbar {

@@ -15,8 +15,11 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #ffffff;
-  color: #0f172a;
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.16), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(120, 113, 108, 0.1), transparent 28%),
+    linear-gradient(180deg, #f8f4ee 0%, #ece7df 100%);
+  color: #1f2937;
 }
 
 .custom-scroll::-webkit-scrollbar {
@@ -107,8 +110,8 @@ button:not(:disabled):active {
 .glass {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(248, 244, 238, 0.78);
+  border: 1px solid rgba(234, 179, 8, 0.14);
 }
 
 .gradient-text {
