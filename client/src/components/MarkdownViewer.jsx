@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -6,8 +6,9 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 const MarkdownViewer = ({ content }) => {
   return (
     <ReactMarkdown
+      children={content}
       components={{
-        code({ inline, className, children, ...props }) {
+        code({ node, inline, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '');
           return !inline && match ? (
             <SyntaxHighlighter
@@ -25,14 +26,8 @@ const MarkdownViewer = ({ content }) => {
           );
         },
       }}
-    >
-      {content}
-    </ReactMarkdown>
+    />
   );
-};
-
-MarkdownViewer.propTypes = {
-  content: PropTypes.string.isRequired
 };
 
 export default MarkdownViewer;

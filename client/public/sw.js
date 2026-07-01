@@ -121,7 +121,7 @@ async function networkFirst(request) {
     }
     
     return networkResponse;
-  } catch {
+  } catch (error) {
     console.log('Network failed, trying cache:', request.url);
     const cachedResponse = await caches.match(request);
     
@@ -154,7 +154,7 @@ async function cacheFirst(request) {
     }
     
     return networkResponse;
-  } catch {
+  } catch (error) {
     console.error('Cache and network failed:', request.url);
     return new Response('Resource not available', { 
       status: 404, 
@@ -189,7 +189,7 @@ async function networkWithCacheFallback(request) {
     }
     
     return networkResponse;
-  } catch {
+  } catch (error) {
     const cachedResponse = await caches.match(request);
     return cachedResponse || new Response('Offline', { 
       status: 503, 
@@ -207,7 +207,7 @@ self.addEventListener('sync', (event) => {
 });
 
 // Handle push notifications (for future notification functionality)
-self.addEventListener('push', () => {
+self.addEventListener('push', (event) => {
   console.log('Service Worker: Push notification received');
   // Implement push notification logic here
 });

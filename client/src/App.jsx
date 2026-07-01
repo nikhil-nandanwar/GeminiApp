@@ -1,18 +1,18 @@
-import React, { useEffect, useState, useCallback, Suspense } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import './App.css'
 
-import Navbar from './components/Navbar'
-import ChatBox from './components/ChatBox'
+// Lazy load components for better performance
+const Navbar = React.lazy(() => import('./components/Navbar'))
+const ChatBox = React.lazy(() => import('./components/ChatBox'))
 const SharedChat = React.lazy(() => import('./components/SharedChat'))
 
 // Loading fallback component
 const LoadingFallback = React.memo(() => (
-  <div className="flex items-center justify-center h-screen bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_42%),linear-gradient(180deg,#f8f4ee_0%,#ece7df_100%)] text-slate-700">
-    <div className="flex flex-col items-center gap-4 rounded-3xl border border-amber-100 bg-[#f8f4ee]/95 px-8 py-7 shadow-[0_20px_60px_rgba(120,113,108,0.12)] backdrop-blur-xl">
-      <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500"></div>
-      <p className="text-sm font-medium tracking-wide">Loading conversation</p>
+  <div className="flex items-center justify-center h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
+    <div className="flex flex-col items-center space-y-4">
+      <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-gray-400 text-sm">Loading...</p>
     </div>
   </div>
 ))
@@ -23,8 +23,9 @@ LoadingFallback.displayName = 'LoadingFallback'
 const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
   <div className={`
     fixed md:relative top-0 left-0 h-full 
-    w-72 md:w-64 lg:w-72
-    bg-[#f8f4ee]/95 backdrop-blur-xl border-r border-amber-100 shadow-[0_20px_60px_rgba(120,113,108,0.12)] flex flex-col p-4 z-30
+    w-80 xs:w-72 sm:w-80 md:w-1/6 lg:w-1/5 xl:w-1/6 2xl:w-1/6
+    bg-gradient-to-b from-dark-800/95 to-dark-900/95 backdrop-blur-md 
+    border-r border-dark-700/50 flex flex-col p-3 md:p-4 z-30
     transform transition-transform duration-300 ease-out
     ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
     ${sidebarOpen ? 'md:flex' : 'hidden md:flex'}
@@ -40,53 +41,37 @@ const Sidebar = React.memo(({ sidebarOpen, onClose }) => (
       </svg>
     </button>
 
-    <div className="mt-8 md:mt-0">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center shadow-sm shadow-orange-200/80">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        </div>
-        <h1 className="font-semibold text-slate-900 text-lg">Chat History</h1>
-      </div>
+    <div className="text-blue-300 mt-8 md:mt-0">
+      <h1 className="font-display font-bold text-lg md:text-xl mb-4 md:mb-6 animate-slideIn">Chat History</h1>
     </div>
     
     <div className="flex-1 overflow-y-auto custom-scroll">
-      <div className="space-y-2">
+      <div className="space-y-2 md:space-y-3">
         {/* Placeholder for future chat history items */}
-        <div className="p-4 rounded-2xl bg-[#f3ede4] border border-amber-100 text-slate-500 text-sm hover:bg-orange-50 hover:border-orange-200 transition-all duration-300 cursor-pointer group">
-          <div className="flex items-center space-x-3">
-            <svg className="w-4 h-4 text-slate-400 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>No previous chats</span>
-          </div>
+        <div className="p-3 md:p-4 rounded-xl bg-dark-700/30 border border-dark-600/30 hover:bg-dark-600/40 transition-all duration-300 cursor-pointer animate-fadeIn opacity-50">
+          <div className="text-sm text-gray-300 font-medium">Previous chats will appear here</div>
+          <div className="text-xs text-gray-500 mt-1">Start a conversation to see history</div>
         </div>
       </div>
     </div>
     
-    {/* Sidebar footer */}
-    <div className="mt-4 pt-4 border-t border-slate-200/80">
-      <div className="p-3 rounded-2xl bg-orange-50/80 border border-orange-200/70">
-        <p className="text-xs text-slate-500">Start a new conversation to see your chat history here.</p>
+    <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-primary-500/10 to-secondary-500/10 border border-primary-500/20">
+      <div className="text-xs text-gray-400 text-center">
+        💡 Tip: Your conversations are saved locally
       </div>
     </div>
   </div>
 ))
 
 Sidebar.displayName = 'Sidebar'
-Sidebar.propTypes = {
-  sidebarOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
-}
 
 // Memoized main content component
 const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
-  <div className='w-full flex h-dvh bg-[radial-gradient(circle_at_top_left,rgba(249,115,22,0.2),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(248,244,238,0.85),transparent_28%),linear-gradient(180deg,#f8f4ee_0%,#ece7df_100%)] overflow-hidden'>
+  <div className='w-full flex h-dvh bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 overflow-hidden'>
     {/* Mobile sidebar overlay */}
     {sidebarOpen && (
       <div 
-        className="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px] z-20 md:hidden animate-fadeIn"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 md:hidden animate-fadeIn"
         onClick={onSidebarClose}
         role="button"
         tabIndex={0}
@@ -104,6 +89,11 @@ const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
     
     {/* Main content */}
     <div className="flex-1 relative overflow-hidden min-w-0">
+      {/* Background gradient effects - responsive */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-900/5 via-transparent to-secondary-900/5 pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-primary-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-secondary-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none" style={{animationDelay: '1s'}}></div>
+      
       <Suspense fallback={<LoadingFallback />}>
         <ChatBox />
       </Suspense>
@@ -112,10 +102,6 @@ const MainContent = React.memo(({ sidebarOpen, onSidebarClose }) => (
 ))
 
 MainContent.displayName = 'MainContent'
-MainContent.propTypes = {
-  sidebarOpen: PropTypes.bool.isRequired,
-  onSidebarClose: PropTypes.func.isRequired
-}
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -123,6 +109,11 @@ function App() {
   // Memoized sidebar close handler
   const handleSidebarClose = useCallback(() => {
     setSidebarOpen(false);
+  }, []);
+
+  // Memoized sidebar toggle handler
+  const handleSidebarToggle = useCallback(() => {
+    setSidebarOpen(prev => !prev);
   }, []);
 
   // Close sidebar when clicking outside or on mobile
@@ -138,26 +129,35 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Memoized routes configuration
+  const routes = useMemo(() => [
+    {
+      path: "/",
+      element: (
+        <>
+          <Suspense fallback={<LoadingFallback />}>
+            <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          </Suspense>
+          <MainContent sidebarOpen={sidebarOpen} onSidebarClose={handleSidebarClose} />
+        </>
+      )
+    },
+    {
+      path: "/:id",
+      element: (
+        <Suspense fallback={<LoadingFallback />}>
+          <SharedChat />
+        </Suspense>
+      )
+    }
+  ], [sidebarOpen, handleSidebarClose]);
+
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={(
-            <>
-              <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-              <MainContent sidebarOpen={sidebarOpen} onSidebarClose={handleSidebarClose} />
-            </>
-          )}
-        />
-        <Route
-          path="/:id"
-          element={(
-            <Suspense fallback={<LoadingFallback />}>
-              <SharedChat />
-            </Suspense>
-          )}
-        />
+        {routes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.element} />
+        ))}
       </Routes>
     </Router>
   )

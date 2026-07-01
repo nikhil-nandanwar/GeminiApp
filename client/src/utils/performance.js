@@ -232,7 +232,7 @@ export class BundleOptimizer {
 
 // Initialize performance monitoring
 export const initPerformanceMonitoring = () => {
-  if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  if (typeof window !== 'undefined') {
     const monitor = PerformanceMonitor.getInstance();
     monitor.init();
     BundleOptimizer.trackBundleSize();
