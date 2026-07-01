@@ -15,8 +15,8 @@ const CopyButton = React.memo(({ code, copied, onCopy }) => (
   <button
     aria-label="Copy code to clipboard"
     onClick={() => onCopy(code)}
-    className={`absolute top-1.5 right-2 text-xs px-3 py-1 rounded bg-[#3b82f6] text-white hover:bg-[#2563eb] transition-all duration-200 ${
-      copied ? 'bg-green-500 hover:bg-green-600' : ''
+    className={`absolute top-1.5 right-2 text-xs px-3 py-1 rounded-full border transition-all duration-200 ${
+      copied ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-slate-600 border-slate-200 hover:bg-orange-50 hover:border-orange-200'
     }`}
   >
     {copied ? 'Copied!' : 'Copy'}
@@ -72,7 +72,9 @@ const CodeBlock = React.memo(({ language, code, className, ...props }) => {
     margin: 0,
     padding: '1rem',
     paddingTop: '2rem',
-    border: '0.1em solid black',
+    border: '1px solid #e2e8f0',
+    borderRadius: '1rem',
+    background: '#f8fafc',
     fontSize: '0.875rem',
     lineHeight: '1.4'
   }), []);
@@ -82,10 +84,10 @@ const CodeBlock = React.memo(({ language, code, className, ...props }) => {
   }, [code]);
 
   return (
-    <div className="relative mb-6 rounded-lg overflow-hidden bg-[#1e1e2f] shadow-lg border border-[#2d2d3d]">
+    <div className="relative mb-6 rounded-2xl overflow-hidden bg-slate-50 shadow-[0_14px_30px_rgba(15,23,42,0.05)] border border-slate-200">
       <CopyButton code={code} copied={copied} onCopy={handleCopy} />
       <React.Suspense fallback={
-        <div className="p-4 bg-gray-800 text-gray-300 font-mono text-sm whitespace-pre-wrap">
+        <div className="p-4 bg-slate-100 text-slate-600 font-mono text-sm whitespace-pre-wrap">
           {code}
         </div>
       }>
@@ -125,7 +127,7 @@ const NewMarkdown = ({ content }) => {
         />
       ) : (
         <code 
-          className={`${className} px-1 py-0.5 rounded bg-gray-700 text-orange-300 font-mono text-sm`} 
+          className={`${className} px-1.5 py-0.5 rounded-md bg-orange-50 text-orange-700 font-mono text-sm border border-orange-100`} 
           {...props}
         >
           {children}
@@ -144,7 +146,7 @@ const NewMarkdown = ({ content }) => {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="text-blue-400 hover:text-blue-300 underline transition-colors duration-200"
+        className="text-orange-600 hover:text-orange-700 underline underline-offset-2 transition-colors duration-200"
         {...props}
       >
         {children}
@@ -153,40 +155,40 @@ const NewMarkdown = ({ content }) => {
     // Optimize table rendering
     table: ({ children, ...props }) => (
       <div className="overflow-x-auto my-4">
-        <table className="min-w-full border-collapse border border-gray-600 rounded-lg" {...props}>
+        <table className="min-w-full border-collapse border border-slate-200 rounded-lg" {...props}>
           {children}
         </table>
       </div>
     ),
     th: ({ children, ...props }) => (
-      <th className="border border-gray-600 px-4 py-2 bg-gray-800 text-left font-semibold" {...props}>
+      <th className="border border-slate-200 px-4 py-2 bg-slate-100 text-left font-semibold text-slate-700" {...props}>
         {children}
       </th>
     ),
     td: ({ children, ...props }) => (
-      <td className="border border-gray-600 px-4 py-2" {...props}>
+      <td className="border border-slate-200 px-4 py-2 text-slate-600" {...props}>
         {children}
       </td>
     ),
     // Optimize blockquote styling
     blockquote: ({ children, ...props }) => (
-      <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-300 my-4 bg-gray-800/50 py-2 rounded-r-lg" {...props}>
+      <blockquote className="border-l-4 border-orange-400 pl-4 italic text-slate-600 my-4 bg-orange-50 py-2 rounded-r-lg" {...props}>
         {children}
       </blockquote>
     ),
     // Style headers
     h1: ({ children, ...props }) => (
-      <h1 className="text-2xl font-bold mt-6 mb-4 text-white border-b border-gray-600 pb-2" {...props}>
+      <h1 className="text-2xl font-bold mt-6 mb-4 text-slate-900 border-b border-slate-200 pb-2" {...props}>
         {children}
       </h1>
     ),
     h2: ({ children, ...props }) => (
-      <h2 className="text-xl font-semibold mt-5 mb-3 text-white" {...props}>
+      <h2 className="text-xl font-semibold mt-5 mb-3 text-slate-900" {...props}>
         {children}
       </h2>
     ),
     h3: ({ children, ...props }) => (
-      <h3 className="text-lg font-medium mt-4 mb-2 text-white" {...props}>
+      <h3 className="text-lg font-medium mt-4 mb-2 text-slate-900" {...props}>
         {children}
       </h3>
     ),
@@ -202,20 +204,20 @@ const NewMarkdown = ({ content }) => {
       </ol>
     ),
     li: ({ children, ...props }) => (
-      <li className="text-gray-200" {...props}>
+      <li className="text-slate-600" {...props}>
         {children}
       </li>
     ),
     // Style paragraphs
     p: ({ children, ...props }) => (
-      <p className="my-3 text-gray-200 leading-relaxed" {...props}>
+      <p className="my-3 text-slate-600 leading-relaxed" {...props}>
         {children}
       </p>
     )
   }), []);
 
   if (!content) {
-    return <p className="text-gray-400">No content available.</p>;
+    return <p className="text-slate-400">No content available.</p>;
   }
 
   return (

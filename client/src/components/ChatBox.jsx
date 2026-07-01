@@ -13,15 +13,15 @@ const ChatMessage = React.memo(({ chat, index }) => {
         <div className={`flex items-start space-x-3 ${isUser ? "flex-row-reverse space-x-reverse" : ""}`}>
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg ${
             isUser 
-              ? "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-500/20" 
-              : "bg-gradient-to-br from-teal-500 to-teal-600 shadow-teal-500/20"
+							? "bg-gradient-to-br from-orange-500 to-amber-400 shadow-orange-200/80" 
+							: "bg-gradient-to-br from-white to-slate-100 shadow-slate-200/90 border border-slate-200"
           }`}>
             {isUser ? (
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             )}
@@ -29,13 +29,13 @@ const ChatMessage = React.memo(({ chat, index }) => {
           
           <div className={`flex-1 min-w-0 p-4 rounded-2xl ${
             isUser
-              ? "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-500/20"
-              : "bg-dark-800/90 text-gray-100 border border-dark-700/50 backdrop-blur-sm"
+							? "bg-gradient-to-br from-orange-500 to-amber-400 text-white shadow-[0_14px_30px_rgba(249,115,22,0.18)]"
+							: "bg-white text-slate-700 border border-slate-200 shadow-[0_14px_30px_rgba(15,23,42,0.05)] backdrop-blur-sm"
           }`}>
-            <div className={`text-xs mb-2 font-medium opacity-70 ${isUser ? "text-emerald-100" : "text-gray-400"}`}>
+						<div className={`text-xs mb-2 font-medium opacity-70 ${isUser ? "text-sky-50" : "text-slate-400"}`}>
               {isUser ? "You" : "AI Assistant"}
             </div>
-            <div className="prose prose-invert max-w-none prose-sm">
+						<div className="prose prose-slate max-w-none prose-sm">
               <React.Suspense fallback={<div className="animate-pulse h-4 bg-gray-600 rounded"></div>}>
                 <NewMarkdown content={chat.parts[0].text} />
               </React.Suspense>
@@ -52,16 +52,16 @@ ChatMessage.displayName = 'ChatMessage';
 // Memoized welcome screen component
 const WelcomeScreen = React.memo(() => (
   <div className="flex flex-col items-center justify-center h-full text-center space-y-8 px-4 animate-fadeIn">
-    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-green-500 flex items-center justify-center shadow-2xl shadow-emerald-500/30 animate-float">
+		<div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center shadow-[0_24px_50px_rgba(249,115,22,0.18)] animate-float">
       <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     </div>
     <div className="space-y-3 max-w-lg">
-      <h2 className="text-3xl font-bold text-white">
+			<h2 className="text-3xl font-bold text-slate-900">
         Welcome to <span className="gradient-text">GeminiChat</span>
       </h2>
-      <p className="text-gray-400 text-base max-w-md mx-auto">
+			<p className="text-slate-500 text-base max-w-md mx-auto">
         Start a conversation with AI. Ask anything, get intelligent responses.
       </p>
     </div>
@@ -88,10 +88,10 @@ const WelcomeScreen = React.memo(() => (
           </svg>
         )}
       ].map((item, index) => (
-        <div key={index} className="p-4 rounded-xl bg-dark-800/50 border border-dark-700/50 hover:border-emerald-500/50 hover:bg-dark-800/80 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 cursor-pointer group">
+				<div key={index} className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-200 hover:bg-sky-50 hover:shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-all duration-300 cursor-pointer group">
           <div className="flex items-center space-x-3">
-            <div className="text-emerald-400 group-hover:scale-110 transition-transform">{item.icon}</div>
-            <span className="text-gray-300 text-sm font-medium">{item.text}</span>
+						<div className="text-orange-500 group-hover:scale-110 transition-transform">{item.icon}</div>
+						<span className="text-slate-600 text-sm font-medium">{item.text}</span>
           </div>
         </div>
       ))}
@@ -238,7 +238,7 @@ function ChatBox() {
 		<div className="w-full flex flex-col h-dvh relative">
 			{/* Chat messages area */}
 			<div className="w-full flex-1 flex justify-center overflow-hidden pt-16">
-				<div ref={chatContainerRef} className="w-full max-w-4xl h-full overflow-y-auto px-4 py-6 scroll-smooth custom-scroll mx-auto">
+				<div ref={chatContainerRef} className="w-full max-w-4xl h-full overflow-y-auto px-4 py-8 scroll-smooth custom-scroll mx-auto">
 					{!prevChat && <WelcomeScreen />}
 					
 					{prevChat &&
@@ -254,7 +254,7 @@ function ChatBox() {
 			</div>
 
 			{/* Input area */}
-			<div className="w-full bg-dark-800/80 backdrop-blur-xl border-t border-dark-700/50 p-4">
+			<div className="w-full bg-white/90 backdrop-blur-xl border-t border-slate-200 p-4 shadow-[0_-12px_40px_rgba(15,23,42,0.05)]">
 				<form
 					onKeyDown={check}
 					onSubmit={handleFormSubmit}
@@ -263,10 +263,10 @@ function ChatBox() {
 					<div className="relative w-full">
 						<div className="relative">
 							<textarea
-								placeholder="Type your message... (Shift+Enter for new line)"
+								placeholder="Write a message. Shift+Enter adds a new line."
 								onChange={handleInputChange}
 								value={prompt}
-								className="w-full rounded-2xl p-4 pr-14 bg-dark-900/80 text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/50 border border-dark-600/50 text-sm backdrop-blur-sm transition-all duration-300"
+								className="w-full rounded-[1.25rem] p-4 pr-14 bg-slate-50 text-slate-900 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-orange-200 border border-slate-200 text-sm shadow-sm transition-all duration-300"
 								rows="1"
 								style={{ 
 									minHeight: "52px", 
@@ -279,7 +279,7 @@ function ChatBox() {
 								<button
 									type="submit"
 									disabled={isSubmitDisabled}
-									className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50"
+									className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-400 hover:from-orange-400 hover:to-amber-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-[0_12px_24px_rgba(249,115,22,0.18)] hover:shadow-[0_14px_28px_rgba(249,115,22,0.24)]"
 								>
 									{isLoading ? (
 										<svg className="w-4 h-4 text-white animate-spin" fill="none" viewBox="0 0 24 24">
@@ -295,7 +295,7 @@ function ChatBox() {
 							</div>
 						</div>
 					</div>
-					<div className="mt-2 text-xs text-gray-500 text-center sm:text-right">
+					<div className="mt-2 text-xs text-slate-400 text-center sm:text-right">
 						Shift+Enter for new line
 					</div>
 				</form>
